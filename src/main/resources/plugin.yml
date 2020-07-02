@@ -1,0 +1,8 @@
+name: StarCompass
+version: ${project.version}
+main: net.stardevelopments.starcompass.StarCompass
+api-version: 1.13
+commands:
+    hunt:
+        description: Let the hunt behind
+        usage: /hunt [player]
