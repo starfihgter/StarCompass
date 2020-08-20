@@ -1,7 +1,7 @@
 name: StarCompass
-version: 2.9
+version: 2.13
 main: net.stardevelopments.starcompass.StarCompass
-api-version: 1.13
+api-version: 1.16
 commands:
     hunt:
         description: Let the hunt behind

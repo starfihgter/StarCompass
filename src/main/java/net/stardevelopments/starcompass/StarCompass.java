@@ -11,6 +11,8 @@ package net.stardevelopments.starcompass;
         import org.bukkit.event.player.PlayerInteractEvent;
         import org.bukkit.event.player.PlayerItemBreakEvent;
         import org.bukkit.event.player.PlayerPortalEvent;
+        import org.bukkit.inventory.ItemStack;
+        import org.bukkit.inventory.meta.CompassMeta;
         import org.bukkit.plugin.java.JavaPlugin;
         import org.bukkit.plugin.Plugin;
 
@@ -21,8 +23,7 @@ package net.stardevelopments.starcompass;
 public final class StarCompass extends JavaPlugin implements Listener {
     public static Plugin plugin;
     //public static Boolean isOtherDimension;
-    static Player target;
-    static Player gamer;
+    static String target;
    // static Location overworldPortal;
     @Override
     public void onEnable() {
@@ -38,27 +39,35 @@ public final class StarCompass extends JavaPlugin implements Listener {
             sender.sendMessage("Enter a player name");
             return false;
         }
-        target = Bukkit.getPlayerExact(args[0]);
-        gamer = (Player) sender;
-        gamer.sendMessage(target.getDisplayName() + " hears the howls and knows fear");
-        target.sendMessage(gamer.getDisplayName() + "'s Hyperspace Rupture detected");
+        target = Bukkit.getPlayerExact(args[0]).getName();
+        Player player = Bukkit.getPlayerExact(target);
+        sender.sendMessage(target + " is now being tracked!");
+        player.sendMessage(sender.getName() + " is tracking you!");
         return true;
     }
 
     @EventHandler
     public void onPlayerInteract(PlayerInteractEvent event){
         Player player = event.getPlayer();
-        if (Objects.requireNonNull(event.getItem()).getType() == Material.getMaterial("COMPASS")){
-            if (gamer == null || target == null) {
-                player.sendMessage("No target to track!");
-                return;
-            }
-            if (player.getDisplayName().equals(gamer.getDisplayName())){
-                if (target.getWorld().getName().equals("world")) {
-                    gamer.setCompassTarget(target.getLocation());
-                    gamer.sendMessage("Tracking " + target.getDisplayName());
-                } else{
-                    gamer.sendMessage("Tracking " + target.getDisplayName() + "'s last known position!");
+        ItemStack compass = event.getItem();
+        if (compass != null) {
+            if (compass.getType() == Material.getMaterial("COMPASS")) {
+                if (Objects.requireNonNull(event.getItem()).getType() == Material.getMaterial("COMPASS")) {
+                    if (target == null) {
+                        player.sendMessage("No target to track!");
+                        return;
+                    }
+                    Player targetPlayer = Bukkit.getPlayerExact(target);
+                    if (Bukkit.getPlayerExact(target).getWorld().getName().equals(player.getWorld().getName())) {
+                        //player.setCompassTarget(targetPlayer.getLocation());
+                        CompassMeta meta = (CompassMeta) compass.getItemMeta();
+                        meta.setLodestoneTracked(false);
+                        meta.setLodestone(targetPlayer.getLocation());
+                        compass.setItemMeta(meta);
+                        player.sendMessage("Tracking " + target);
+                    } else {
+                        player.sendMessage("Tracking " + target + "'s last known position!");
+                    }
                 }
             }
         }
