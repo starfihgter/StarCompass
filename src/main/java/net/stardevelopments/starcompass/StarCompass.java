@@ -8,9 +8,11 @@ package net.stardevelopments.starcompass;
         import org.bukkit.entity.Player;
         import org.bukkit.event.EventHandler;
         import org.bukkit.event.Listener;
+        import org.bukkit.event.entity.PlayerDeathEvent;
         import org.bukkit.event.player.PlayerInteractEvent;
         import org.bukkit.event.player.PlayerItemBreakEvent;
         import org.bukkit.event.player.PlayerPortalEvent;
+        import org.bukkit.event.player.PlayerRespawnEvent;
         import org.bukkit.inventory.ItemStack;
         import org.bukkit.inventory.meta.CompassMeta;
         import org.bukkit.inventory.meta.ItemMeta;
@@ -83,6 +85,18 @@ public final class StarCompass extends JavaPlugin implements Listener {
                     }
                 }
             }
+    }
+
+    @EventHandler
+    public void onPlayerRespawn(PlayerRespawnEvent e){
+        if (target != null){
+            Player player = e.getPlayer();
+            ItemStack newCompass = new ItemStack(Material.COMPASS);
+            ItemMeta compassMeta = newCompass.getItemMeta();
+            compassMeta.setDisplayName(target + " tracker");
+            newCompass.setItemMeta(compassMeta);
+            player.getInventory().addItem(newCompass);
+        }
     }
 
    // @EventHandler

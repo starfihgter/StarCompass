@@ -1,5 +1,5 @@
 name: StarCompass
-version: 2.2
+version: 2.15
 main: net.stardevelopments.starcompass.StarCompass
 api-version: 1.16
 commands:
